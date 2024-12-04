@@ -34,6 +34,90 @@ async function run() {
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
+        const database = client.db('sportsEquipments');
+        const equipmentCollection = database.collection('equipment');
+        const userCollection = database.collection('users');
+
+
+        app.get('/equipment', async (req, res) => {
+            const cursor = equipmentCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        
+        app.get('/equipment/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await equipmentCollection.findOne(query);
+            res.send(result);
+        })
+
+
+        app.post('/equipment', async (req, res) => {
+            const newequipment = req.body;
+            console.log('Adding new equipment', newequipment)
+            const result = await equipmentCollection.insertOne(newequipment);
+            res.send(result);
+        });
+
+        app.put('/equipment/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: req.body
+            }
+            const result = await equipmentCollection.updateOne(filter, updatedDoc, options)
+            res.send(result);
+        })
+          
+
+        app.delete('/equipment/:id', async (req, res) => {
+            console.log('going to delete', req.params.id);
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await equipmentCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
+        // Users related apis
+        app.get('/users', async (req, res) => {
+            const cursor = userCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.post('/users', async (req, res) => {
+            const newUser = req.body;
+            console.log('creating new user', newUser);
+            const result = await userCollection.insertOne(newUser);
+            res.send(result);
+        });
+
+        app.patch('/users', async (req, res) => {
+            const email = req.body.email;
+            const filter = { email };
+            const updatedDoc = {
+                $set: {
+                    lastSignInTime: req.body?.lastSignInTime,
+                    hotoUrl: req.body?.photo,
+                    name: req.body?.name,
+                }
+            }
+
+            const result = await userCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+        })
+
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await userCollection.deleteOne(query);
+            res.send(result);
+        })
+
     } finally {
         // Ensures that the client will close when you finish/error
         //   await client.close();
