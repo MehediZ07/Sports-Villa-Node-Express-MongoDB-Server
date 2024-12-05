@@ -37,6 +37,7 @@ async function run() {
         const database = client.db('sportsEquipments');
         const equipmentCollection = database.collection('equipment');
         const userCollection = database.collection('users');
+        const ourAthletesCollection = database.collection('ourAthletes');
 
 
         app.get('/equipment', async (req, res) => {
@@ -117,6 +118,14 @@ async function run() {
             const result = await userCollection.deleteOne(query);
             res.send(result);
         })
+
+           // ourAthletes related apis
+           app.get('/ourAthletes', async (req, res) => {
+            const cursor = ourAthletesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
 
     } finally {
         // Ensures that the client will close when you finish/error
