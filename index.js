@@ -157,7 +157,25 @@ async function run() {
                     const result = await cartCollection.deleteOne(query);
                     res.send(result);
                 })
-        
+
+                app.delete('/clearCart', async (req, res) => {
+                    try {
+                        const result = await cartCollection.deleteMany({}); // Delete all documents
+                        res.send({
+                            acknowledged: result.acknowledged,
+                            deletedCount: result.deletedCount,
+                            message: 'All items have been removed from the collection.',
+                        });
+                    } catch (error) {
+                        console.error("Error clearing the collection:", error);
+                        res.status(500).send({ error: "Failed to clear the collection." });
+                    }
+                });
+                
+                
+                
+                
+                
     } finally {
         // Ensures that the client will close when you finish/error
         //   await client.close();
