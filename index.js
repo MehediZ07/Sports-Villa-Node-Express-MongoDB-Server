@@ -38,6 +38,7 @@ async function run() {
         const equipmentCollection = database.collection('equipment');
         const userCollection = database.collection('users');
         const ourAthletesCollection = database.collection('ourAthletes');
+        const ourPartnerCollection = database.collection('ourPartner');
 
 
         app.get('/equipment', async (req, res) => {
@@ -125,6 +126,13 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         });
+
+                // ourPartner related apis
+                app.get('/ourPartner', async (req, res) => {
+                    const cursor = ourPartnerCollection.find();
+                    const result = await cursor.toArray();
+                    res.send(result);
+                });
 
 
     } finally {
