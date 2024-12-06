@@ -141,13 +141,23 @@ async function run() {
                    const result = await cursor.toArray();
                    res.send(result);
                 });
+
+
                 app.post('/addCart', async (req, res) => {
                     const newequipment = req.body;
                     console.log('Adding new equipment', newequipment)
                     const result = await cartCollection.insertOne(newequipment);
                     res.send(result);
                 });
-
+                
+                app.delete('/addCart/:id', async (req, res) => {
+                    console.log('going to delete', req.params.id);
+                    const id = req.params.id;
+                    const query = { _id: new ObjectId(id) }
+                    const result = await cartCollection.deleteOne(query);
+                    res.send(result);
+                })
+        
     } finally {
         // Ensures that the client will close when you finish/error
         //   await client.close();
