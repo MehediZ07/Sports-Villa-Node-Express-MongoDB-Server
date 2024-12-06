@@ -39,6 +39,7 @@ async function run() {
         const userCollection = database.collection('users');
         const ourAthletesCollection = database.collection('ourAthletes');
         const ourPartnerCollection = database.collection('ourPartner');
+        const cartCollection = database.collection('addCart');
 
 
         app.get('/equipment', async (req, res) => {
@@ -134,6 +135,18 @@ async function run() {
                     res.send(result);
                 });
 
+                // addCart related apis
+               app.get('/addCart', async (req, res) => {
+                   const cursor = cartCollection.find();
+                   const result = await cursor.toArray();
+                   res.send(result);
+                });
+                app.post('/addCart', async (req, res) => {
+                    const newequipment = req.body;
+                    console.log('Adding new equipment', newequipment)
+                    const result = await cartCollection.insertOne(newequipment);
+                    res.send(result);
+                });
 
     } finally {
         // Ensures that the client will close when you finish/error
