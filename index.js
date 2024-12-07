@@ -63,6 +63,7 @@ async function run() {
             const result = await equipmentCollection.insertOne(newequipment);
             res.send(result);
         });
+          
 
         app.put('/equipment/:id', async (req, res) => {
             const id = req.params.id;
@@ -71,10 +72,12 @@ async function run() {
             const updatedDoc = {
                 $set: req.body
             }
+
             const result = await equipmentCollection.updateOne(filter, updatedDoc, options)
+
             res.send(result);
         })
-          
+
 
         app.delete('/equipment/:id', async (req, res) => {
             console.log('going to delete', req.params.id);
