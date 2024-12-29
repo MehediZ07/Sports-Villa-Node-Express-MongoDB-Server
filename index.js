@@ -8,12 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.swu9d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-// sportsEquipments
-// uPlMoHIHZE9Wi6Gg
-
-const uri = "mongodb+srv://sportsEquipments:uPlMoHIHZE9Wi6Gg@cluster0.9yghi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.9yghi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 
 
@@ -28,11 +24,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
-        // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
 
         const database = client.db('sportsEquipments');
         const equipmentCollection = database.collection('equipment');
@@ -59,7 +51,6 @@ async function run() {
 
         app.post('/equipment', async (req, res) => {
             const newequipment = req.body;
-            console.log('Adding new equipment', newequipment)
             const result = await equipmentCollection.insertOne(newequipment);
             res.send(result);
         });
@@ -80,7 +71,7 @@ async function run() {
 
 
         app.delete('/equipment/:id', async (req, res) => {
-            console.log('going to delete', req.params.id);
+
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await equipmentCollection.deleteOne(query);
@@ -97,7 +88,7 @@ async function run() {
 
         app.post('/users', async (req, res) => {
             const newUser = req.body;
-            console.log('creating new user', newUser);
+        
             const result = await userCollection.insertOne(newUser);
             res.send(result);
         });
@@ -148,13 +139,13 @@ async function run() {
 
                 app.post('/addCart', async (req, res) => {
                     const newequipment = req.body;
-                    console.log('Adding new equipment', newequipment)
+               
                     const result = await cartCollection.insertOne(newequipment);
                     res.send(result);
                 });
                 
                 app.delete('/addCart/:id', async (req, res) => {
-                    console.log('going to delete', req.params.id);
+                   
                     const id = req.params.id;
                     const query = { _id: new ObjectId(id) }
                     const result = await cartCollection.deleteOne(query);
@@ -163,14 +154,14 @@ async function run() {
 
                 app.delete('/clearCart', async (req, res) => {
                     try {
-                        const result = await cartCollection.deleteMany({}); // Delete all documents
+                        const result = await cartCollection.deleteMany({}); 
                         res.send({
                             acknowledged: result.acknowledged,
                             deletedCount: result.deletedCount,
                             message: 'All items have been removed from the collection.',
                         });
                     } catch (error) {
-                        console.error("Error clearing the collection:", error);
+                        
                         res.status(500).send({ error: "Failed to clear the collection." });
                     }
                 });
@@ -181,7 +172,7 @@ async function run() {
                 
     } finally {
         // Ensures that the client will close when you finish/error
-        //   await client.close();
+        
     }
 }
 run().catch(console.dir);
@@ -191,5 +182,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Sports Equipment in port: ${port}`);
+    
 })
